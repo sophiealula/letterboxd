@@ -481,9 +481,6 @@
             document.getElementById('error').classList.remove('show');
         }
 
-        // CORS proxy for browser requests
-        const PROXY = 'https://corsproxy.io/?';
-
         async function getWatchlist(username) {
             const films = [];
             let page = 1;
@@ -491,8 +488,7 @@
             while (page <= 20) { // Safety limit
                 showLoading(`Fetching page ${page} of watchlist...`);
 
-                const url = `https://letterboxd.com/${username}/watchlist/page/${page}/`;
-                const res = await fetch(PROXY + encodeURIComponent(url));
+                const res = await fetch(`/api/watchlist?username=${encodeURIComponent(username)}&page=${page}`);
 
                 if (!res.ok) break;
 
@@ -519,7 +515,7 @@
             const query = film.name.replace(/\s*\(\d{4}\)\s*$/, '').trim();
 
             try {
-                const res = await fetch(PROXY + encodeURIComponent('https://apis.justwatch.com/graphql'), {
+                const res = await fetch('/api/justwatch', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
